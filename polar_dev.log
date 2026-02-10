@@ -1,0 +1,168 @@
+2026-02-09 18:22:03,350 - __main__ - INFO - ✅ Dados carregados com sucesso
+2026-02-09 18:22:03,352 - discord.client - WARNING - PyNaCl is not installed, voice will NOT be supported
+2026-02-09 18:22:03,355 - __main__ - INFO - 🚀 Iniciando PolarDev Bot...
+2026-02-09 18:22:03,359 - discord.client - INFO - logging in using static token
+2026-02-09 18:22:04,923 - __main__ - INFO - ✅ Comandos sincronizados
+2026-02-09 18:22:06,175 - __main__ - ERROR - ❌ Erro fatal: 'PolarDevBot' object has no attribute 'cleanup_task'
+2026-02-09 18:23:08,761 - __main__ - INFO - ✅ Dados carregados com sucesso
+2026-02-09 18:23:08,763 - discord.client - WARNING - PyNaCl is not installed, voice will NOT be supported
+2026-02-09 18:23:08,766 - __main__ - INFO - 🚀 Iniciando PolarDev Bot...
+2026-02-09 18:23:08,771 - discord.client - INFO - logging in using static token
+2026-02-09 18:23:10,061 - __main__ - INFO - ✅ Comandos sincronizados
+2026-02-09 18:23:10,847 - discord.gateway - INFO - Shard ID None has connected to Gateway (Session ID: a92efedeae97cc3e7b78e9059e0154e0).
+2026-02-09 18:26:39,273 - __main__ - INFO - ✅ Dados carregados com sucesso
+2026-02-09 18:26:39,275 - discord.client - WARNING - PyNaCl is not installed, voice will NOT be supported
+2026-02-09 18:26:39,278 - __main__ - INFO - 🚀 Iniciando PolarDev Bot...
+2026-02-09 18:26:39,330 - discord.client - INFO - logging in using static token
+2026-02-09 18:26:40,543 - __main__ - INFO - ✅ Comandos sincronizados
+2026-02-09 18:26:41,193 - discord.gateway - INFO - Shard ID None has connected to Gateway (Session ID: 02cb1f1baa68bf0009dc37a9a895242c).
+2026-02-09 18:31:25,766 - discord.app_commands.tree - ERROR - Ignoring exception in command tree
+Traceback (most recent call last):
+  File "C:\Users\Cliente\AppData\Roaming\Python\Python314\site-packages\discord\app_commands\tree.py", line 1138, in wrapper
+    await self._call(interaction)
+  File "C:\Users\Cliente\AppData\Roaming\Python\Python314\site-packages\discord\app_commands\tree.py", line 1270, in _call
+    command, options = self._get_app_command_options(data)
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\Cliente\AppData\Roaming\Python\Python314\site-packages\discord\app_commands\tree.py", line 1174, in _get_app_command_options
+    raise CommandNotFound(name, parents)
+discord.app_commands.errors.CommandNotFound: Application command 'teste' not found
+2026-02-09 18:31:25,770 - discord.app_commands.tree - ERROR - Ignoring exception in command tree
+Traceback (most recent call last):
+  File "C:\Users\Cliente\AppData\Roaming\Python\Python314\site-packages\discord\app_commands\tree.py", line 1138, in wrapper
+    await self._call(interaction)
+  File "C:\Users\Cliente\AppData\Roaming\Python\Python314\site-packages\discord\app_commands\tree.py", line 1270, in _call
+    command, options = self._get_app_command_options(data)
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\Cliente\AppData\Roaming\Python\Python314\site-packages\discord\app_commands\tree.py", line 1174, in _get_app_command_options
+    raise CommandNotFound(name, parents)
+discord.app_commands.errors.CommandNotFound: Application command 'teste' not found
+2026-02-09 18:43:40,119 - __main__ - INFO - ✅ Dados carregados: 0 usuários, 0 keys
+2026-02-09 18:43:40,122 - discord.client - WARNING - PyNaCl is not installed, voice will NOT be supported
+2026-02-09 18:43:40,129 - discord.client - INFO - logging in using static token
+2026-02-09 18:43:41,419 - __main__ - INFO - ✅ Comandos sincronizados
+2026-02-09 18:43:42,334 - discord.gateway - INFO - Shard ID None has connected to Gateway (Session ID: 47b0d07061ef94e133ab9bb551f47362).
+2026-02-09 18:43:44,385 - __main__ - INFO - ✅ PolarDev Bot conectado como PolarDev#9978
+2026-02-09 18:43:44,799 - __main__ - INFO - 🆔 ID: 1470136614507384883
+2026-02-09 18:43:45,053 - __main__ - INFO - 🏠 Servidores: 1
+2026-02-09 18:46:11,345 - discord.app_commands.tree - ERROR - Ignoring exception in command 'resgatar'
+Traceback (most recent call last):
+  File "C:\Users\Cliente\AppData\Roaming\Python\Python314\site-packages\discord\app_commands\commands.py", line 859, in _do_call
+    return await self._callback(interaction, **params)  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Cliente\Desktop\PolarDev (BOT)\main.py", line 638, in resgatar
+    new_balance = db.add_credits(str(interaction.user.id), credits_value)
+  File "C:\Users\Cliente\Desktop\PolarDev (BOT)\main.py", line 205, in add_credits
+    self.update_user(user_id, **user_data)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+TypeError: PolarDatabase.update_user() got multiple values for argument 'user_id'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Cliente\AppData\Roaming\Python\Python314\site-packages\discord\app_commands\tree.py", line 1297, in _call
+    await command._invoke_with_namespace(interaction, namespace)
+  File "C:\Users\Cliente\AppData\Roaming\Python\Python314\site-packages\discord\app_commands\commands.py", line 884, in _invoke_with_namespace
+    return await self._do_call(interaction, transformed_values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Cliente\AppData\Roaming\Python\Python314\site-packages\discord\app_commands\commands.py", line 873, in _do_call
+    raise CommandInvokeError(self, e) from e
+discord.app_commands.errors.CommandInvokeError: Command 'resgatar' raised an exception: TypeError: PolarDatabase.update_user() got multiple values for argument 'user_id'
+2026-02-09 18:46:55,544 - discord.app_commands.tree - ERROR - Ignoring exception in command 'resgatar'
+Traceback (most recent call last):
+  File "C:\Users\Cliente\AppData\Roaming\Python\Python314\site-packages\discord\app_commands\commands.py", line 859, in _do_call
+    return await self._callback(interaction, **params)  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Cliente\Desktop\PolarDev (BOT)\main.py", line 638, in resgatar
+    new_balance = db.add_credits(str(interaction.user.id), credits_value)
+  File "C:\Users\Cliente\Desktop\PolarDev (BOT)\main.py", line 205, in add_credits
+    self.update_user(user_id, **user_data)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+TypeError: PolarDatabase.update_user() got multiple values for argument 'user_id'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Cliente\AppData\Roaming\Python\Python314\site-packages\discord\app_commands\tree.py", line 1297, in _call
+    await command._invoke_with_namespace(interaction, namespace)
+  File "C:\Users\Cliente\AppData\Roaming\Python\Python314\site-packages\discord\app_commands\commands.py", line 884, in _invoke_with_namespace
+    return await self._do_call(interaction, transformed_values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Cliente\AppData\Roaming\Python\Python314\site-packages\discord\app_commands\commands.py", line 873, in _do_call
+    raise CommandInvokeError(self, e) from e
+discord.app_commands.errors.CommandInvokeError: Command 'resgatar' raised an exception: TypeError: PolarDatabase.update_user() got multiple values for argument 'user_id'
+2026-02-09 18:47:59,425 - __main__ - ERROR - API Error 402: {"error":{"message":"Insufficient Balance","type":"unknown_error","param":null,"code":"invalid_request_error"}}
+2026-02-09 18:49:01,029 - __main__ - ERROR - API Error 402: {"error":{"message":"Insufficient Balance","type":"unknown_error","param":null,"code":"invalid_request_error"}}
+2026-02-09 18:51:04,381 - discord.app_commands.tree - ERROR - Ignoring exception in command 'resgatar'
+Traceback (most recent call last):
+  File "C:\Users\Cliente\AppData\Roaming\Python\Python314\site-packages\discord\app_commands\commands.py", line 859, in _do_call
+    return await self._callback(interaction, **params)  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Cliente\Desktop\PolarDev (BOT)\main.py", line 638, in resgatar
+    new_balance = db.add_credits(str(interaction.user.id), credits_value)
+  File "C:\Users\Cliente\Desktop\PolarDev (BOT)\main.py", line 205, in add_credits
+    self.update_user(user_id, **user_data)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+TypeError: PolarDatabase.update_user() got multiple values for argument 'user_id'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Cliente\AppData\Roaming\Python\Python314\site-packages\discord\app_commands\tree.py", line 1297, in _call
+    await command._invoke_with_namespace(interaction, namespace)
+  File "C:\Users\Cliente\AppData\Roaming\Python\Python314\site-packages\discord\app_commands\commands.py", line 884, in _invoke_with_namespace
+    return await self._do_call(interaction, transformed_values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Cliente\AppData\Roaming\Python\Python314\site-packages\discord\app_commands\commands.py", line 873, in _do_call
+    raise CommandInvokeError(self, e) from e
+discord.app_commands.errors.CommandInvokeError: Command 'resgatar' raised an exception: TypeError: PolarDatabase.update_user() got multiple values for argument 'user_id'
+2026-02-10 11:50:15,102 - __main__ - INFO - ✅ Dados carregados: 1 usuários, 3 keys
+2026-02-10 11:50:15,170 - discord.client - WARNING - PyNaCl is not installed, voice will NOT be supported
+2026-02-10 11:50:15,426 - discord.client - INFO - logging in using static token
+2026-02-10 11:50:17,093 - __main__ - INFO - ✅ Comandos sincronizados
+2026-02-10 11:50:17,873 - discord.gateway - INFO - Shard ID None has connected to Gateway (Session ID: 4bf34dc40dd467f37d4617268fd17ad7).
+2026-02-10 11:50:35,148 - __main__ - INFO - ✅ Dados carregados: 1 usuários, 3 keys
+2026-02-10 11:50:35,150 - discord.client - WARNING - PyNaCl is not installed, voice will NOT be supported
+2026-02-10 11:50:35,154 - discord.client - INFO - logging in using static token
+2026-02-10 11:51:17,156 - __main__ - INFO - ✅ Comandos sincronizados
+2026-02-10 11:51:20,264 - discord.gateway - INFO - Shard ID None has connected to Gateway (Session ID: be19de53fe5d8860d54a57af6f12b22a).
+2026-02-10 11:51:22,299 - __main__ - INFO - ✅ PolarDev Bot conectado como PolarDev#9978
+2026-02-10 11:51:22,311 - __main__ - INFO - 🆔 ID: 1470136614507384883
+2026-02-10 11:52:52,501 - __main__ - ERROR - Resgatar error: PolarDatabase.update_user() got multiple values for argument 'user_id'
+2026-02-10 11:53:26,251 - __main__ - ERROR - Resgatar error: PolarDatabase.update_user() got multiple values for argument 'user_id'
+2026-02-10 12:01:11,978 - __main__ - INFO - ✅ Dados carregados: 1 usuários, 5 keys
+2026-02-10 12:01:11,985 - discord.client - WARNING - PyNaCl is not installed, voice will NOT be supported
+2026-02-10 12:01:12,068 - discord.client - INFO - logging in using static token
+2026-02-10 12:01:13,544 - __main__ - INFO - ✅ Comandos sincronizados
+2026-02-10 12:01:14,412 - discord.gateway - INFO - Shard ID None has connected to Gateway (Session ID: 9c7b7bb57899aff7693c4027def17754).
+2026-02-10 12:01:16,513 - __main__ - INFO - ✅ PolarDev Bot conectado como PolarDev#9978
+2026-02-10 12:01:16,605 - __main__ - INFO - 🆔 ID: 1470136614507384883
+2026-02-10 12:02:33,989 - __main__ - INFO - Key PD-TEWS-GJXM-8QWS-X9AE usada por 1469740024605049043 por 10.0 créditos
+2026-02-10 12:02:33,991 - __main__ - ERROR - ❌ ERRO em /resgatar: PolarDatabase.update_user() got multiple values for argument 'user_id'
+Traceback (most recent call last):
+  File "C:\Users\Cliente\Desktop\PolarDev (BOT)\main.py", line 585, in resgatar
+    new_balance = db.add_credits(str(interaction.user.id), credits_value)
+  File "C:\Users\Cliente\Desktop\PolarDev (BOT)\main.py", line 205, in add_credits
+    self.update_user(user_id, **user_data)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+TypeError: PolarDatabase.update_user() got multiple values for argument 'user_id'
+2026-02-10 12:05:07,057 - __main__ - ERROR - API Error 402: {"error":{"message":"Insufficient Balance","type":"unknown_error","param":null,"code":"invalid_request_error"}}
+2026-02-10 12:05:29,596 - discord.ui.modal - ERROR - Ignoring exception in modal <SystemCreationModal timeout=300 children=1>:
+Traceback (most recent call last):
+  File "C:\Users\Cliente\AppData\Roaming\Python\Python314\site-packages\discord\ui\modal.py", line 216, in _scheduled_task
+    await self.on_submit(interaction)
+  File "C:\Users\Cliente\Desktop\PolarDev (BOT)\main.py", line 826, in on_submit
+    if not db.deduct_credits(self.user_id, COST_PER_CREATION):
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Cliente\Desktop\PolarDev (BOT)\main.py", line 191, in deduct_credits
+    self.update_user(user_id, **user_data)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+TypeError: PolarDatabase.update_user() got multiple values for argument 'user_id'
+2026-02-10 12:13:21,502 - __main__ - INFO - ✅ Dados carregados: 1 usuários, 6 keys
+2026-02-10 12:13:21,614 - discord.client - WARNING - PyNaCl is not installed, voice will NOT be supported
+2026-02-10 12:13:21,907 - discord.client - INFO - logging in using static token
+2026-02-10 12:13:25,356 - __main__ - INFO - ✅ Comandos sincronizados
+2026-02-10 12:13:26,072 - discord.gateway - INFO - Shard ID None has connected to Gateway (Session ID: 8420bbc93941139d6ffcd8d0eac6dab4).
+2026-02-10 12:13:28,218 - __main__ - INFO - ✅ Bot conectado: PolarDev
+2026-02-10 12:15:38,634 - __main__ - INFO - ✅ Key PD-J3VG-7ECN-ZZ28-7S53 resgatada por 1469740024605049043
+2026-02-10 12:16:35,545 - __main__ - WARNING - API Status: 402
+2026-02-10 12:18:17,825 - __main__ - WARNING - API Creation Status: 402
