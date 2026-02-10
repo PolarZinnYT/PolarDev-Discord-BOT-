@@ -1,0 +1,19 @@
+{
+  "1469740024605049043": {
+    "user_id": "1469740024605049043",
+    "credits": 111.0,
+    "created_at": "2026-02-09T18:46:10.169781",
+    "keys_redeemed": 3,
+    "total_credits_received": 111.0,
+    "total_creations": 0,
+    "total_credits_spent": 0.0,
+    "last_key_redeemed": "2026-02-09T18:51:04.380773",
+    "last_activity": null,
+    "preferences": {
+      "language": "portuguese",
+      "code_style": "clean",
+      "auto_explain": true,
+      "notification": true
+    }
+  }
+}
