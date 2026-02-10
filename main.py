@@ -6,13 +6,36 @@ import random
 import string
 import json
 import asyncio
-import aiohttp
 import re
 import logging
+import requests
 from datetime import datetime, timedelta
 from typing import Optional, List, Dict, Any
 from dotenv import load_dotenv
 import time
+from flask import Flask
+from threading import Thread
+
+# ================= FLASK PARA KEEP-ALIVE =================
+app = Flask('')
+
+@app.route('/')
+def home():
+    return "🤖 PolarDev Bot está online! | Status: ✅ Ativo"
+
+@app.route('/health')
+def health():
+    return {"status": "healthy", "timestamp": datetime.now().isoformat()}
+
+def run_flask():
+    app.run(host='0.0.0.0', port=8080)
+
+def keep_alive():
+    """Mantém o bot ativo no Render"""
+    t = Thread(target=run_flask)
+    t.daemon = True
+    t.start()
+    print("✅ Flask server iniciado na porta 8080")
 
 # ================= CONFIGURAÇÃO =================
 load_dotenv()
@@ -157,13 +180,12 @@ class Database:
 
 db = Database()
 
-# ================= IA OPENROUTER PROFISSIONAL =================
+# ================= IA OPENROUTER PROFISSIONAL (COM REQUESTS) =================
 class PolarDevAI:
     def __init__(self, api_key: str):
         self.api_key = api_key
         self.base_url = "https://openrouter.ai/api/v1/chat/completions"
-        self.session = None
-        self.rate_limit_delay = 1.5  # Delay entre requisições
+        self.timeout = 30
         
         # Prompt profissional para OpenRouter
         self.system_prompt = """Você é PolarDev, especialista sênior em desenvolvimento Roblox Lua. Você possui 10+ anos de experiência criando sistemas complexos para produção.
@@ -217,19 +239,11 @@ SEMPRE inclua:
 4. Considerações de performance
 5. Possíveis extensões"""
 
-    async def get_session(self):
-        if self.session is None or self.session.closed:
-            timeout = aiohttp.ClientTimeout(total=30)
-            self.session = aiohttp.ClientSession(timeout=timeout)
-        return self.session
-    
     async def make_request(self, messages: List[Dict], max_tokens: int = 2000, is_creation: bool = False) -> Optional[str]:
-        """Faz requisição para OpenRouter API"""
+        """Faz requisição para OpenRouter API usando requests"""
         try:
-            session = await self.get_session()
-            
             # Modelo mais poderoso do OpenRouter
-            model = "mistralai/mixtral-8x7b-instruct"  # Modelo gratuito potente
+            model = "mistralai/mixtral-8x7b-instruct"
             
             payload = {
                 "model": model,
@@ -246,23 +260,34 @@ SEMPRE inclua:
                 "X-Title": "PolarDev Bot"
             }
             
-            async with session.post(self.base_url, headers=headers, json=payload) as response:
-                if response.status == 200:
-                    data = await response.json()
-                    return data["choices"][0]["message"]["content"]
-                elif response.status == 429:
-                    logger.warning("Rate limit atingido, aguardando...")
-                    await asyncio.sleep(5)
-                    return None
-                else:
-                    error_text = await response.text()
-                    logger.error(f"OpenRouter Error {response.status}: {error_text[:200]}")
-                    return None
-                    
-        except asyncio.TimeoutError:
+            # Usando requests com asyncio para não bloquear
+            loop = asyncio.get_event_loop()
+            response = await loop.run_in_executor(
+                None, 
+                lambda: requests.post(
+                    self.base_url, 
+                    headers=headers, 
+                    json=payload, 
+                    timeout=self.timeout
+                )
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                return data["choices"][0]["message"]["content"]
+            elif response.status_code == 429:
+                logger.warning("Rate limit atingido, aguardando...")
+                await asyncio.sleep(5)
+                return None
+            else:
+                error_text = response.text[:200]
+                logger.error(f"OpenRouter Error {response.status_code}: {error_text}")
+                return None
+                
+        except requests.Timeout:
             logger.warning("Timeout na requisição")
             return None
-        except aiohttp.ClientError as e:
+        except requests.RequestException as e:
             logger.error(f"Erro de conexão: {e}")
             return None
         except Exception as e:
@@ -380,8 +405,28 @@ class PolarDevBot(commands.Bot):
         self.ai = ai
     
     async def setup_hook(self):
+        """Configuração inicial assíncrona"""
         await self.tree.sync()
         logger.info("✅ Comandos sincronizados")
+        
+        # Inicia a task de mudar status
+        self.loop.create_task(self.change_status())
+    
+    async def change_status(self):
+        """Task para mudar status periodicamente"""
+        await self.wait_until_ready()
+        
+        statuses = [
+            discord.Activity(type=discord.ActivityType.watching, name=f"/ajuda • IA Profissional"),
+            discord.Activity(type=discord.ActivityType.playing, name=f"Roblox Studio • {len(db.users)} usuários"),
+            discord.Activity(type=discord.ActivityType.listening, name=f"/criar_chat • {len(db.chats)} chats"),
+            discord.Activity(type=discord.ActivityType.watching, name=f"OpenRouter • Mixtral 8x7B")
+        ]
+        
+        while not self.is_closed():
+            for status in statuses:
+                await self.change_presence(activity=status, status=discord.Status.online)
+                await asyncio.sleep(60)
 
 bot = PolarDevBot()
 
@@ -735,7 +780,8 @@ async def ping(interaction: discord.Interaction):
         f"📡 **Latência:** {latency}ms\n"
         f"🤖 **IA:** OpenRouter (Mixtral 8x7B)\n"
         f"💾 **Usuários:** {len(db.users)}\n"
-        f"💬 **Chats ativos:** {len(db.chats)}",
+        f"💬 **Chats ativos:** {len(db.chats)}\n"
+        f"🌐 **Status:** Online ✅",
         COLORS["primary"]
     )
     await interaction.response.send_message(embed=embed, ephemeral=True)
@@ -794,17 +840,13 @@ async def on_ready():
     print(f"🔗 Nome: {bot.user.name}")
     print(f"🆔 ID: {bot.user.id}")
     print(f"🧠 IA: OpenRouter Mixtral 8x7B")
+    print(f"🌐 Flask: http://0.0.0.0:8080")
     print(f"👥 Usuários: {len(db.users)}")
     print(f"💬 Chats: {len(db.chats)}")
     print(f"{'='*60}\n")
     print("✅ Bot 100% funcional com IA profissional!")
+    print("🌐 Flask rodando para manter ativo no Render")
     print("📝 Teste agora: /criar_chat → Conversar → 🛠️ Criar Sistema")
-    
-    activity = discord.Activity(
-        type=discord.ActivityType.watching,
-        name=f"/ajuda • IA Profissional"
-    )
-    await bot.change_presence(activity=activity, status=discord.Status.online)
 
 @bot.event
 async def on_message(message: discord.Message):
@@ -847,6 +889,10 @@ if __name__ == "__main__":
     print("\n" + "="*60)
     print("🚀 INICIANDO POLARDEV BOT COM OPENROUTER IA")
     print("="*60 + "\n")
+    
+    # Inicia Flask para manter ativo
+    keep_alive()
+    print("✅ Flask iniciado - Bot sempre ativo no Render")
     
     try:
         bot.run(TOKEN)
