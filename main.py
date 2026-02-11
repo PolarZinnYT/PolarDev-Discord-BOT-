@@ -187,69 +187,43 @@ class PolarDevAI:
         self.base_url = "https://api.groq.com/openai/v1/chat/completions"
         self.timeout = 60
         
-        # Prompt especializado APENAS para Roblox Luau
-        self.system_prompt = """VOCÊ É UM ESPECIALISTA SÊNIOR EM DESENVOLVIMENTO ROBLOX LUA/LUAU.
-        SUA ÚNICA FUNÇÃO É CRIAR CÓDIGO PARA A PLATAFORMA ROBLOX.
-        
-        DIRETRIZES ABSOLUTAS:
-        1. RECUSE QUALQUER PEDIDO QUE NÃO SEJA PARA ROBLOX
-        2. SÓ GERE CÓDIGO LUA/LUAU PARA ROBLOX STUDIO
-        3. FOCO EM SCRIPT, LOCALSCRIPT E MODULESCRIPT
-        4. SEMPRE USE BOAS PRÁTICAS DE ROBLOX
-        
-        TIPOS DE ARQUIVOS ROBLOX:
-        • Script (ServerScriptService) - Lógica do servidor
-        • LocalScript (StarterPack/StarterGui) - Lógica do cliente
-        • ModuleScript (ReplicatedStorage) - Módulos reutilizáveis
-        
-        ESTRUTURA DE PASTAS RECOMENDADA:
-        ServerScriptService/
-        ├── SistemaPrincipal/
-        │   ├── Main.server.lua (Script)
-        │   ├── Config.server.lua (ModuleScript)
-        │   └── Modulos/
-        │       ├── Database.server.lua (ModuleScript)
-        │       └── Utils.server.lua (ModuleScript)
-        
-        ReplicatedStorage/
-        ├── SharedModules/
-        │   └── SharedUtils.lua (ModuleScript)
-        
-        StarterPack/
-        └── SistemaPrincipal/
-            └── Main.client.lua (LocalScript)
-        
-        StarterGui/
-        └── InterfacePrincipal/
-            └── ScreenGui/
-                └── Main.client.lua (LocalScript)
-        
-        REGRAS DE CÓDIGO:
-        1. Use nomes em inglês com snake_case
-        2. Comente em português explicando a função
-        3. Use tipos Luau quando possível: local variable: type = value
-        4. Tratamento de erros com pcall() e warn()
-        5. Otimização: evite loops pesados, use debounce
-        6. Segurança: valide inputs do cliente no servidor
-        
-        FORMATO DE RESPOSTA PARA SISTEMAS:
-        === ARQUIVO 1: ServerScriptService/Sistema/Main.server.lua ===
-        [CÓDIGO COMPLETO DO SCRIPT DO SERVIDOR]
-        
-        === ARQUIVO 2: ServerScriptService/Sistema/Config.server.lua ===
-        [CÓDIGO COMPLETO DO MODULESCRIPT DE CONFIGURAÇÃO]
-        
-        === ARQUIVO 3: StarterPack/Sistema/Main.client.lua ===
-        [CÓDIGO COMPLETO DO LOCALSCRIPT DO CLIENTE]
-        
-        INSTRUÇÕES DE INSTALAÇÃO:
-        1. Crie as pastas no Roblox Studio conforme estrutura acima
-        2. Crie os Scripts/LocalScripts/ModuleScripts com os nomes corretos
-        3. Cole o código correspondente em cada arquivo
-        4. Ajuste configurações se necessário
-        5. Teste no Play Solo e depois em servidor
-        
-        RECUSE qualquer pedido que não seja desenvolvimento Roblox."""
+        # Prompt especializado para Roblox Luau
+        self.system_prompt = """Você é PolarDev, especialista sênior em desenvolvimento Roblox Lua/Luau com 10+ anos de experiência.
+
+DIRETRIZES DE RESPOSTA:
+1. Para perguntas sobre Roblox: responda de forma amigável e útil
+2. Para sistemas complexos: gere múltiplos scripts organizados
+3. Sempre explique conceitos de forma clara
+4. Foco em boas práticas de Roblox Studio
+
+ESPECIALIDADES:
+- Script, LocalScript, ModuleScript
+- DataStores e persistência de dados
+- RemoteEvents/Functions para comunicação
+- UI/UX com ScreenGuis
+- Otimização de performance
+- Segurança e anti-exploit
+
+PARA CONVERSA NORMAL:
+- Seja amigável e prestativo
+- Explique conceitos de forma simples
+- Dê exemplos práticos
+- Incentive perguntas
+
+PARA SISTEMAS COMPLEXOS:
+=== ARQUIVO 1: ServerScriptService/Sistema/Main.server.lua ===
+[código completo]
+
+=== ARQUIVO 2: StarterPack/Sistema/Main.client.lua ===
+[código completo]
+
+=== ARQUIVO 3: ServerScriptService/Sistema/Config.module.lua ===
+[código completo]
+
+INSTRUÇÕES DE INSTALAÇÃO:
+Passo a passo para Roblox Studio
+
+Sempre use ```lua para blocos de código."""
 
     async def make_request(self, messages: List[Dict], max_tokens: int = 4000) -> Optional[str]:
         """Faz requisição para Groq API"""
@@ -312,30 +286,38 @@ class PolarDevAI:
             return None
     
     async def generate_response(self, message: str) -> str:
-        """Gera resposta para conversas normais"""
-        # Verifica se é sobre Roblox
-        roblox_keywords = ['roblox', 'lua', 'luau', 'script', 'localscript', 'modulescript', 
-                          'serverscriptservice', 'starterpack', 'replicatedstorage', 'roblox studio']
+        """Gera resposta para conversas normais - Versão mais amigável"""
+        # Primeiro verifica se é saudação
+        greetings = ['ola', 'olá', 'oi', 'hey', 'hi', 'hello', 'eae', 'opa', 'fala']
+        if message.lower() in greetings:
+            return "Olá! 👋 Eu sou a PolarDev, especialista em desenvolvimento Roblox Lua/Luau! Como posso te ajudar hoje com Roblox Studio?"
         
-        message_lower = message.lower()
-        if not any(keyword in message_lower for keyword in roblox_keywords):
-            return "⚠️ **Atenção:** Sou especializado apenas em desenvolvimento Roblox Lua/Luau.\nPor favor, faça perguntas específicas sobre Roblox Studio, scripts, ou sistemas para Roblox."
-        
-        messages = [
-            {"role": "system", "content": self.system_prompt},
-            {"role": "user", "content": f"PERGUNTA SOBRE ROBLOX: {message}\n\nResponda apenas se for sobre desenvolvimento Roblox. Se não for, recuse educadamente."}
-        ]
+        # Verifica se é pergunta sobre ModuleScript
+        if 'modulescript' in message.lower() or 'module script' in message.lower():
+            messages = [
+                {"role": "system", "content": self.system_prompt},
+                {"role": "user", "content": f"Explique de forma clara e amigável o que é um ModuleScript no Roblox, para que serve, e dê um exemplo simples."}
+            ]
+        else:
+            # Resposta geral
+            messages = [
+                {"role": "system", "content": self.system_prompt},
+                {"role": "user", "content": f"Usuário perguntou: {message}\n\nResponda de forma amigável, útil e focada em desenvolvimento Roblox."}
+            ]
         
         for attempt in range(3):
             response = await self.make_request(messages, max_tokens=1500)
             if response:
+                # Remove possíveis menções restritivas
+                response = response.replace("RECUSE QUALQUER PEDIDO", "Posso te ajudar")
+                response = response.replace("SÓ GERE CÓDIGO", "Especializado em")
                 return response
             
             if attempt < 2:
                 wait_time = (attempt + 1) * 2
                 await asyncio.sleep(wait_time)
         
-        return "🤖 Estou processando sua solicitação. Para criar sistemas Roblox completos, use o botão abaixo."
+        return "🤖 Olá! Sou a PolarDev, especialista em Roblox. Posso te ajudar com:\n• Dúvidas sobre Lua/Luau\n• Criação de sistemas Roblox\n• Otimização de scripts\n• E muito mais! 😊"
     
     def extract_roblox_code_blocks(self, text: str) -> List[Dict[str, str]]:
         """Extrai múltiplos blocos de código Roblox da resposta"""
@@ -392,7 +374,7 @@ class PolarDevAI:
         return code_blocks
     
     def determine_roblox_path(self, filename: str) -> str:
-        """Determina o caminho correto no Roblox Studio baseado no nome do arquivo"""
+        """Determina o caminho correto no Roblox Studio"""
         filename_lower = filename.lower()
         
         if filename_lower.endswith('.client.lua'):
@@ -426,7 +408,7 @@ class PolarDevAI:
                 if len(guide) > 50:
                     return guide
         
-        # Guia padrão se não encontrar
+        # Guia padrão
         return """📁 **PASSO A PASSO PARA INSTALAR NO ROBLOX STUDIO:**
 
 1. **ABRA SEU JOGO** no Roblox Studio
@@ -441,88 +423,38 @@ class PolarDevAI:
    - Renomeie para o nome do arquivo
    - Clique duas vezes no script e cole o código correspondente
 
-4. **AJUSTES NECESSÁRIOS:**
-   - Configure variáveis como `GAME_ID` ou `DATASTORE_NAME`
-   - Ajuste nomes de RemoteEvents/Functions se necessário
-
-5. **TESTE:**
+4. **TESTE:**
    - Primeiro em "Play Solo" (modo local)
    - Depois publique e teste online
-   - Verifique o Output para erros
-
-🔧 **DICA:** Salve sempre uma cópia do seu projeto antes de fazer grandes mudanças!"""
+   - Verifique o Output para erros"""
     
     async def create_roblox_system(self, description: str) -> Dict[str, Any]:
-        """Cria um sistema Roblox completo com estrutura profissional"""
-        
-        # Verifica se é sobre Roblox
-        if not self.is_roblox_related(description):
-            return {
-                "success": False,
-                "error": "❌ **Sou especializado apenas em desenvolvimento Roblox.**\nPor favor, descreva um sistema, script ou mecânica para Roblox Studio.",
-                "code_blocks": [],
-                "instructions": ""
-            }
-        
-        prompt = f"""CRIE UM SISTEMA COMPLETO DE ROBLOX LUA/LUAU BASEADO NA DESCRIÇÃO ABAIXO.
+        """Cria um sistema Roblox completo"""
+        prompt = f"""CRIE UM SISTEMA COMPLETO DE ROBLOX LUA/LUAU BASEADO NA DESCRIÇÃO:
 
-DESCRIÇÃO DO SISTEMA ROBLOX:
 {description}
 
-REQUISITOS TÉCNICOS (ROBLOX ESPECÍFICOS):
+REQUISITOS:
 1. Código 100% funcional para Roblox Studio
-2. Estrutura organizada em Scripts, LocalScripts e ModuleScripts
-3. Usar serviços do Roblox corretamente (DataStoreService, ReplicatedStorage, etc.)
-4. Segurança: validar tudo no servidor
-5. Performance: otimizado para Roblox (evitar waits, usar Heartbeat)
-6. Boas práticas de Luau (tipos, annotations)
+2. Estrutura organizada com múltiplos arquivos se necessário
+3. Segurança: validar tudo no servidor
+4. Performance: otimizado para Roblox
 
-ESTRUTURA OBRIGATÓRIA:
-=== ARQUIVO 1: ServerScriptService/SistemaPrincipal/Main.server.lua ===
--- Sistema Principal (Script do Servidor)
---[[
-    NOME: [Nome baseado na descrição]
-    AUTOR: PolarDev
-    DESCRIÇÃO: Sistema de [descrição breve]
-    VERSÃO: 1.0.0
-    ROBLOX SERVICES: DataStoreService, ReplicatedStorage, etc.
-]]
+FORMATO:
+=== ARQUIVO 1: ServerScriptService/Sistema/Main.server.lua ===
+[CÓDIGO COMPLETO]
 
-[CÓDIGO LUA/LUAU COMPLETO E FUNCIONAL PARA SERVIDOR]
+=== ARQUIVO 2: StarterPack/Sistema/Main.client.lua ===
+[CÓDIGO COMPLETO]
 
-=== ARQUIVO 2: StarterPack/SistemaPrincipal/Main.client.lua ===
--- Sistema Cliente (LocalScript)
---[[
-    CLIENT-SIDE: Interface e lógica do jogador
-    CONEXÃO COM: ServerScriptService via RemoteEvents
-]]
+=== ARQUIVO 3: ServerScriptService/Sistema/Config.module.lua ===
+[CÓDIGO COMPLETO]
 
-[CÓDIGO LUA/LUAU COMPLETO E FUNCIONAL PARA CLIENTE]
+INSTRUÇÕES DETALHADAS DE INSTALAÇÃO:
+Explique passo a passo como instalar no Roblox Studio.
 
-=== ARQUIVO 3: ServerScriptService/SistemaPrincipal/Config.module.lua ===
--- Configurações (ModuleScript)
---[[
-    CONFIGURAÇÕES: Todas as variáveis ajustáveis
-    SEGURANÇA: Valores padrão seguros
-]]
-
-[CÓDIGO DO MODULESCRIPT DE CONFIGURAÇÃO]
-
-INSTRUÇÕES DETALHADAS DE INSTALAÇÃO NO ROBLOX STUDIO:
-Explique passo a passo:
-1. Onde criar cada pasta (ServerScriptService, StarterPack, etc.)
-2. Como criar cada tipo de Script (Script, LocalScript, ModuleScript)
-3. Como nomear cada arquivo
-4. Como testar o sistema (Play Solo → Servidor Online)
-5. Solução de problemas comuns no Roblox
-
-DICAS ESPECÍFICAS PARA ROBLOX:
-- Como lidar com DataStores
-- Como usar RemoteEvents/Functions com segurança
-- Como otimizar para múltiplos jogadores
-- Como debugar no Output do Roblox Studio
-
-O sistema deve ser COMPLETO e PRONTO para copiar/colar no Roblox Studio."""
+DICAS DE PERFORMANCE:
+Dicas específicas para otimizar este sistema."""
 
         messages = [
             {"role": "system", "content": self.system_prompt},
@@ -540,8 +472,7 @@ O sistema deve ser COMPLETO e PRONTO para copiar/colar no Roblox Studio."""
                         "success": True,
                         "full_response": response,
                         "code_blocks": code_blocks,
-                        "instructions": self.extract_installation_guide(response),
-                        "is_roblox": True
+                        "instructions": self.extract_installation_guide(response)
                     }
                 else:
                     return {
@@ -553,8 +484,7 @@ O sistema deve ser COMPLETO e PRONTO para copiar/colar no Roblox Studio."""
                             "type": "Script",
                             "path": "ServerScriptService/Sistema"
                         }],
-                        "instructions": self.extract_installation_guide(response),
-                        "is_roblox": True
+                        "instructions": self.extract_installation_guide(response)
                     }
             
             if attempt < 2:
@@ -564,28 +494,8 @@ O sistema deve ser COMPLETO e PRONTO para copiar/colar no Roblox Studio."""
         
         return {
             "success": False,
-            "error": "Não foi possível gerar o sistema Roblox. Tente novamente com uma descrição mais detalhada.",
-            "code_blocks": [],
-            "instructions": "",
-            "is_roblox": True
+            "error": "Não foi possível gerar o sistema. Tente novamente com uma descrição mais detalhada."
         }
-    
-    def is_roblox_related(self, text: str) -> bool:
-        """Verifica se o texto é sobre Roblox"""
-        roblox_keywords = [
-            'roblox', 'lua', 'luau', 'script', 'localscript', 'modulescript',
-            'datastore', 'remoteevent', 'replicatedstorage', 'starterpack',
-            'serverscriptservice', 'roblox studio', 'game', 'jogo',
-            'player', 'jogador', 'part', 'brick', 'tool', 'ferramenta',
-            'gui', 'interface', 'ui', 'hud', 'camera', 'câmera',
-            'money', 'dinheiro', 'xp', 'experience', 'experiência',
-            'inventory', 'inventário', 'shop', 'loja', 'combat', 'combate',
-            'gun', 'arma', 'sword', 'espada', 'damage', 'dano',
-            'health', 'vida', 'mana', 'stamina', 'estamina'
-        ]
-        
-        text_lower = text.lower()
-        return any(keyword in text_lower for keyword in roblox_keywords)
 
 ai = PolarDevAI(GROQ_API_KEY)
 
@@ -793,15 +703,14 @@ async def criar_chat(interaction: discord.Interaction, nome: Optional[str] = Non
         welcome_embed = discord.Embed(
             title="🤖 BEM-VINDO AO POLARDEV ROBLOX STUDIO!",
             description=f"Olá {interaction.user.mention}! Sou a **PolarDev**, especialista em desenvolvimento Roblox Lua/Luau.\n\n"
-                       f"🎮 **ESPECIALIZAÇÃO:**\n"
-                       f"• Scripts, LocalScripts e ModuleScripts\n"
-                       f"• Sistemas completos para Roblox Studio\n"
-                       f"• Otimização e segurança Roblox\n"
-                       f"• UI/UX, Databases, Gameplay\n\n"
-                       f"💬 **PARA CONVERSAR:** Apenas pergunte sobre Roblox\n"
+                       f"🎮 **COMO FUNCIONA:**\n"
+                       f"• Me envie mensagens normais para conversar\n"
+                       f"• Use o botão abaixo para criar sistemas completos\n"
+                       f"• Tire dúvidas sobre Roblox, Lua, scripts, etc.\n\n"
+                       f"💬 **PARA CONVERSAR:** Apenas digite sua mensagem\n"
                        f"🛠️ **PARA CRIAR SISTEMAS:** Use o botão abaixo\n"
-                       f"💰 **CUSTO:** {format_credits(COST_PER_CREATION)} por sistema completo\n\n"
-                       f"⚠️ **ATENÇÃO:** Só respondo perguntas sobre Roblox!",
+                       f"💰 **CUSTO POR SISTEMA:** {format_credits(COST_PER_CREATION)} créditos\n\n"
+                       f"👋 **Vamos começar? Me pergunte algo sobre Roblox!**",
             color=COLORS["primary"],
             timestamp=datetime.now()
         )
@@ -813,7 +722,7 @@ async def criar_chat(interaction: discord.Interaction, nome: Optional[str] = Non
                 self.user_id = user_id
             
             @discord.ui.button(label="🛠️ Criar Sistema Roblox", style=discord.ButtonStyle.primary, emoji="🎮", custom_id="create_roblox_system")
-            async def create_system(self, interaction: discord.Interaction, button: discord.ui.Button):
+            async def create_system_button(self, interaction: discord.Interaction, button: discord.ui.Button):
                 if str(interaction.user.id) != self.user_id:
                     await interaction.response.send_message("❌ Apenas o dono deste chat pode criar sistemas.", ephemeral=True)
                     return
@@ -830,18 +739,22 @@ async def criar_chat(interaction: discord.Interaction, nome: Optional[str] = Non
                 modal = RobloxSystemCreationModal(self.user_id)
                 await interaction.response.send_modal(modal)
         
+        # Registra a view globalmente
+        bot.add_view(ChatView(str(interaction.user.id)))
+        
         await channel.send(embed=welcome_embed, view=ChatView(str(interaction.user.id)))
         
         embed = create_embed(
             "✅ Chat Roblox Criado!",
             f"Seu chat privado foi criado: {channel.mention}\n\n"
             f"🎮 **AGORA VOCÊ PODE:**\n"
-            f"• Criar sistemas completos para Roblox\n"
-            f"• Obter código Lua/Luau profissional\n"
-            f"• Aprender desenvolvimento Roblox\n"
-            f"• Resolver problemas específicos\n\n"
-            f"💡 **DICA:** Use o botão **🎮 Criar Sistema Roblox** para gerar\n"
-            f"Scripts, LocalScripts e ModuleScripts completos!",
+            f"• Conversar normalmente sobre Roblox\n"
+            f"• Criar sistemas completos com o botão\n"
+            f"• Obter ajuda especializada\n\n"
+            f"💡 **DICA:** Pergunte coisas como:\n"
+            f"• \"Como funciona um ModuleScript?\"\n"
+            f"• \"Me explique DataStores\"\n"
+            f"• \"Como criar um inventário?\"",
             COLORS["success"]
         )
         
@@ -861,7 +774,7 @@ class RobloxSystemCreationModal(discord.ui.Modal, title="🎮 Criar Sistema Robl
         
         self.description = discord.ui.TextInput(
             label="Descreva o sistema Roblox em detalhes",
-            placeholder="Ex: Sistema de inventário com arrastar/soltar UI, salvar no DataStore, otimizado para 50 jogadores, com slots e categorias",
+            placeholder="Ex: Sistema de inventário com arrastar/soltar UI, salvar no DataStore, otimizado para 50 jogadores",
             style=discord.TextStyle.paragraph,
             required=True,
             max_length=2000
@@ -941,12 +854,12 @@ class RobloxSystemCreationModal(discord.ui.Modal, title="🎮 Criar Sistema Robl
                     else:
                         await interaction.channel.send(f"```lua\n{code}\n```")
                     
-                    await asyncio.sleep(1)
+                    await asyncio.sleep(0.5)
                 
                 instructions_embed = create_embed(
                     "📋 GUIA DE INSTALAÇÃO NO ROBLOX STUDIO",
                     f"{result['instructions']}\n\n"
-                    f"🔧 **DICAS IMPORTANTES PARA ROBLOX:**\n"
+                    f"🔧 **DICAS IMPORTANTES:**\n"
                     f"1. Teste SEMPRE em Play Solo primeiro\n"
                     f"2. Verifique o Output para erros\n"
                     f"3. Ajuste IDs e nomes conforme seu jogo\n"
@@ -955,16 +868,6 @@ class RobloxSystemCreationModal(discord.ui.Modal, title="🎮 Criar Sistema Robl
                 )
                 await interaction.channel.send(embed=instructions_embed)
                 
-                final_embed = create_embed(
-                    "🎯 PRONTO PARA USAR!",
-                    f"Seu sistema Roblox está completo e pronto para implementar.\n\n"
-                    f"🔧 **PRECISA DE AJUSTES?**\n"
-                    f"Descreva o problema no chat e eu ajudo a corrigir!\n\n"
-                    f"🎮 **BOA SORTE COM SEU JOGO ROBLOX!**",
-                    COLORS["success"]
-                )
-                await interaction.channel.send(embed=final_embed)
-                
             else:
                 db.add_credits(self.user_id, COST_PER_CREATION)
                 await interaction.followup.send(
@@ -972,13 +875,11 @@ class RobloxSystemCreationModal(discord.ui.Modal, title="🎮 Criar Sistema Robl
                                      f"{result['error']}\n\n"
                                      "**Seus créditos foram devolvidos.**\n\n"
                                      "Possíveis causas:\n"
-                                     "• Descrição não é sobre Roblox\n"
-                                     "• API temporariamente indisponível\n"
-                                     "• Descrição muito vaga\n\n"
+                                     "• Descrição muito vaga\n"
+                                     "• API temporariamente indisponível\n\n"
                                      "**SUGESTÕES:**\n"
-                                     "1. Seja específico sobre Roblox\n"
-                                     "2. Descreva scripts, mecânicas, sistemas\n"
-                                     "3. Tente novamente em 1-2 minutos",
+                                     "1. Seja mais específico\n"
+                                     "2. Tente novamente em 1-2 minutos",
                                      COLORS["error"]),
                     ephemeral=True
                 )
@@ -1025,17 +926,18 @@ async def ajuda(interaction: discord.Interaction):
     embed = create_embed(
         "❓ AJUDA DO POLARDEV - ROBLOX SPECIALIST",
         "**🤖 POLARDEV - ESPECIALISTA EM ROBLOX LUA/LUAU**\n"
-        "Sou especializado exclusivamente em desenvolvimento Roblox.\n\n"
-        "**🎮 O QUE POSSO FAZER:**\n"
-        "✅ **Scripts Roblox** - Server e Client\n"
-        "✅ **Sistemas completos** - Inventário, Combate, UI, etc.\n"
-        "✅ **Otimização** - Performance para múltiplos jogadores\n"
-        "✅ **Segurança** - Anti-exploit e validações\n"
-        "✅ **Boas práticas** - Código limpo e organizado\n\n"
-        "**⚠️ RESTRIÇÕES:**\n"
-        "❌ NÃO crio código para outras plataformas\n"
-        "❌ NÃO respondo perguntas não relacionadas a Roblox\n"
-        "❌ NÃO gero conteúdo fora do Roblox Studio",
+        "Sou especializado em desenvolvimento Roblox Studio!\n\n"
+        "**🎮 COMO USAR:**\n"
+        "1. Use `/criar_chat` para criar um chat privado\n"
+        "2. No chat, você pode:\n"
+        "   • Me perguntar qualquer coisa sobre Roblox\n"
+        "   • Usar o botão para criar sistemas completos\n"
+        "   • Tirar dúvidas sobre Lua, Luau, scripts\n\n"
+        "**🛠️ SISTEMAS COMPLETOS:**\n"
+        f"• Custo: {format_credits(COST_PER_CREATION)} por sistema\n"
+        "• Gera Scripts, LocalScripts e ModuleScripts\n"
+        "• Instruções passo a passo\n"
+        "• Código 100% funcional",
         COLORS["primary"]
     )
     
@@ -1054,18 +956,12 @@ async def ajuda(interaction: discord.Interaction):
     )
     
     embed.add_field(
-        name="🛠️ **CRIAÇÃO DE SISTEMAS ROBLOX**",
-        value=f"• No chat, clique em **🎮 Criar Sistema Roblox**\n"
-              f"• Descreva o sistema EM DETALHES\n"
-              f"• Receba Scripts, LocalScripts e ModuleScripts\n"
-              f"• Guia completo de instalação no Roblox Studio\n"
-              f"• **Custo:** {format_credits(COST_PER_CREATION)} por sistema",
-        inline=False
-    )
-    
-    embed.add_field(
-        name="🎯 **EXEMPLOS DE SISTEMAS ROBLOX**",
-        value="• Sistema de Inventário com UI\n• Sistema de Combate com hitboxes\n• Loja com economia segura\n• Sistema de XP e níveis\n• GUI complexa com animações\n• DataStore otimizado\n• Sistema de missões\n• Ferramentas customizadas\n• Qualquer sistema para Roblox!",
+        name="🎯 **EXEMPLOS DE PERGUNTAS**",
+        value="• \"O que é um ModuleScript?\"\n"
+              "• \"Como usar DataStores?\"\n"
+              "• \"Me explique RemoteEvents\"\n"
+              "• \"Como criar um inventário?\"\n"
+              "• \"Dicas de otimização\"",
         inline=False
     )
     
@@ -1085,38 +981,72 @@ async def on_ready():
     print(f"💬 Sistemas Roblox: {len(db.chats)}")
     print(f"{'='*60}\n")
     print("✅ Bot 100% funcional como especialista Roblox!")
-    print("🎮 Só responde perguntas sobre Roblox Studio")
-    print("📝 Teste: /criar_chat → 🎮 Criar Sistema Roblox")
+    print("💬 Agora responde mensagens normais de forma amigável")
+    print("🎮 Botão de criação funcionando corretamente")
 
 @bot.event
 async def on_message(message: discord.Message):
+    # Ignora mensagens do próprio bot
     if message.author.bot:
         return
     
-    if not isinstance(message.channel, discord.TextChannel):
-        return
-    
-    if not message.channel.category:
-        return
-    
-    if message.channel.category.name == CATEGORY_NAME:
+    # Se a mensagem é em um chat da categoria PolarDev
+    if message.channel.category and message.channel.category.name == CATEGORY_NAME:
+        # Verifica se é um chat registrado
         if str(message.channel.id) not in db.chats:
             return
         
-        if message.content.startswith(('!', '/', '\\')):
+        # Ignora comandos com prefixo
+        if message.content.startswith(('/', '!', '\\')):
             return
         
         try:
+            # Mostra que está digitando
             async with message.channel.typing():
+                # Gera resposta
                 response = await ai.generate_response(message.content)
             
+            # Envia a resposta
             if response:
                 await message.channel.send(response)
-            else:
-                await message.channel.send("🤖 Estou processando. Para sistemas completos, use o botão 🎮 Criar Sistema Roblox.")
         
         except Exception as e:
             logger.error(f"Erro ao responder: {e}")
+            await message.channel.send("🤖 Oops, tive um problema ao processar sua mensagem. Tente novamente!")
+    
+    # Processa comandos normais do bot
+    await bot.process_commands(message)
+
+# ================= MANUTENÇÃO PERIÓDICA =================
+@tasks.loop(minutes=30)
+async def cleanup_old_data():
+    """Limpa dados antigos periodicamente"""
+    try:
+        current_time = datetime.now()
+        # Remove chats muito antigos (30 dias)
+        old_chats = []
+        for channel_id, chat_data in db.chats.items():
+            created_at = datetime.fromisoformat(chat_data["created_at"])
+            if (current_time - created_at).days > 30:
+                old_chats.append(channel_id)
+        
+        for channel_id in old_chats:
+            del db.chats[channel_id]
+        
+        if old_chats:
+            db.save_all()
+            logger.info(f"Limpeza: removidos {len(old_chats)} chats antigos")
+    
+    except Exception as e:
+        logger.error(f"Erro na limpeza: {e}")
+
+@bot.event
+async def on_guild_channel_delete(channel):
+    """Remove chat do banco de dados quando o canal é deletado"""
+    if str(channel.id) in db.chats:
+        del db.chats[str(channel.id)]
+        db.save_all()
+        logger.info(f"Canal {channel.id} removido do banco de dados")
 
 # ================= INICIALIZAÇÃO =================
 if __name__ == "__main__":
